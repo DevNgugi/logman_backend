@@ -31,16 +31,23 @@ class LogConsumer(AsyncWebsocketConsumer):
             ssh.connect(hostname, port=port, username=username, password=password)
             stdin, stdout, stderr = ssh.exec_command(command, get_pty=True)
             try:
-                while True:
+
+                while not stdout.channel.exit_status_ready():
+                    # Non-blocking read using recv_ready and recv
                     if stdout.channel.recv_ready():
-                        line = stdout.readline()
-                        if line:
-                            message = line.strip()
-                            print(message)
-                            await self.channel_layer.group_send(
+                        data = stdout.channel.recv(2048)
+                        if data:
+                            message = (data.decode().strip()).splitlines()
+                            for i, m in enumerate(message):
+                                 await self.channel_layer.group_send(
                                 self.room_group_name,
-                                {"type": "chat.message", "message": message}
+                                {"type": "chat.message", "message":  m}
                             )
+                            # await self.channel_layer.group_send(
+                            #     self.room_group_name,
+                            #     {"type": "chat.message", "message":  message}
+                            # )
+                    
                     await asyncio.sleep(0.1)
 
             except Exception as e:
