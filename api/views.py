@@ -17,9 +17,8 @@ class Sources(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     serializer_class = SourceSerializer
 
 class Connections(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     
-    user = 'user'
     queryset = Connection.objects.all()
     serializer_class = ConnectionSerializer
 
