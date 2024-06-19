@@ -14,7 +14,7 @@ class ConnectionSerializer(serializers.ModelSerializer):
         model = Connection
         fields = '__all__'
 
-    def convert_password(self,password):
+    def encrypt_password(self,password):
         try:
             binary_pass = cipher_suite().encrypt(password.encode())
             

@@ -28,7 +28,7 @@ class Connections(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     def perform_create(self, serializer):
         password = self.request.data.get('ssh_pass')
         if password:
-            encrypted_password = serializer.convert_password(password)
+            encrypted_password = serializer.encrypt_password(password)
             serializer.validated_data['ssh_pass'] = encrypted_password
         serializer.save()
 
