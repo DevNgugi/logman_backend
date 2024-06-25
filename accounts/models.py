@@ -31,7 +31,7 @@ class LogmanUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=30, blank=True)
     is_active = models.BooleanField(default=True)
-    organization  = models.ForeignKey(Organization,on_delete=models.PROTECT, null=True)
+    organization  = models.ForeignKey(Organization,on_delete=models.PROTECT)
 
     objects = LogmanUserManager()
 

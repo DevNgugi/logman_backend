@@ -6,11 +6,12 @@ class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
         model = LogmanUser
         fields = ('id', 'email', 'name', 'password','organization')
-        
+
     def validate(self, attrs):
+        print(attrs)
         if 'organization' not in attrs or attrs['organization'] is None:
             raise serializers.ValidationError("The organization field must be set.")
-        return attrs
+        # return attrs
 
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
