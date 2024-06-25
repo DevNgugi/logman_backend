@@ -16,9 +16,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'api',
+    'accounts',
     'rest_framework',
     'drf_yasg',
-    'djoser'
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'noreply@jambopay.com'
 EMAIL_HOST_PASSWORD = 'Trent655!!'
 DEFAULT_FROM_EMAIL = 'noreply@jambopay.com' 
+
+
+AUTH_USER_MODEL="accounts.LogmanUser"

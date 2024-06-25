@@ -3,6 +3,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from .serializers import ConnectionSerializer, SourceSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.contrib.auth.models import User, Group
 
 # from api.services.crypt import cipher_suite
 #     obj = Connection.objects.first()
@@ -16,12 +17,11 @@ class Sources(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     serializer_class = SourceSerializer
 
 class Connections(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     queryset = Connection.objects.all()
     serializer_class = ConnectionSerializer
 
-    # def get_serializer_class(self):
 
     def perform_create(self, serializer):
         password = self.request.data.get('ssh_pass')
@@ -29,6 +29,3 @@ class Connections(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
             encrypted_password = serializer.encrypt_password(password)
             serializer.validated_data['ssh_pass'] = encrypted_password
         serializer.save()
-
-    
-
