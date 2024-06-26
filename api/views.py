@@ -25,14 +25,6 @@ class Connections(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     serializer_class = ConnectionSerializer
 
 
-    def perform_create(self, serializer):
-        password = self.request.data.get('ssh_pass')
-        if password:
-            encrypted_password = serializer.encrypt_password(password)
-            serializer.validated_data['ssh_pass'] = encrypted_password
-        serializer.save()
-
-
 class OrganizationViewSet(viewsets.ModelViewSet):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer

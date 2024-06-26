@@ -12,15 +12,15 @@ class Organization(models.Model):
 class Connection(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    username = models.CharField(max_length=30)
+    ssh_user = models.CharField(max_length=30)
     ssh_pass = models.BinaryField(blank=False)
-    host = models.CharField(max_length=30)
-    port = models.IntegerField()
+    ssh_host = models.CharField(max_length=30)
+    ssh_port = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.host
+        return self.ssh_host
 
 
 class Source(models.Model):
