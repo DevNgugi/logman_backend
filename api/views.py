@@ -1,9 +1,11 @@
 from .models import Connection, Source
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .serializers import ConnectionSerializer, SourceSerializer
+from .serializers import ConnectionSerializer, OrganizationSerializer, SourceSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.models import User, Group
+from api.models import Organization
+from rest_framework import viewsets
 
 # from api.services.crypt import cipher_suite
 #     obj = Connection.objects.first()
@@ -29,3 +31,8 @@ class Connections(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
             encrypted_password = serializer.encrypt_password(password)
             serializer.validated_data['ssh_pass'] = encrypted_password
         serializer.save()
+
+
+class OrganizationViewSet(viewsets.ModelViewSet):
+    queryset = Organization.objects.all()
+    serializer_class = OrganizationSerializer

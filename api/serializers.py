@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Source,Connection
-from api.services.crypt import cipher_suite
+from .models import Organization, Source,Connection
+from api.utils.crypt import cipher_suite
+from api.utils.generators import generate_code
 
 class SourceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,7 +24,14 @@ class ConnectionSerializer(serializers.ModelSerializer):
         except Exception as e:
             raise serializers.ValidationError(f"Error encoding password to binary: {str(e)}")
 
-class UserConnectionSerializer(serializers.ModelSerializer):
+class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Connection
-        fields = ['id','host']
+        model = Organization
+        fields = ['title','code']
+        extra_kwargs = {
+            'code': {'read_only': True},
+        }
+    
+    def create(self, validated_data):
+        validated_data['code'] = generate_code(8)
+        return Organization.objects.create(**validated_data)

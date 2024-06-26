@@ -5,6 +5,7 @@ from uuid import uuid4
 class Organization(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     title = models.CharField(max_length=30)
+    code = models.CharField(max_length=30, unique=True, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -32,6 +33,7 @@ class Source(models.Model):
     def __str__(self):
         return self.title
     
+
 
 
 

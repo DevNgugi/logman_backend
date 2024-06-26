@@ -15,11 +15,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'drf_yasg',
+    'rest_framework_simplejwt',
+    
     'api',
     'accounts',
     'rest_framework',
-    'drf_yasg',
-    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -104,25 +105,12 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
 ]
 
-DJOSER = {
-    'USER_ID_FIELD': 'id',
-    'LOGIN_FIELD': 'email', 
-    'USER_CREATE_PASSWORD_RETYPE': True,
-    'SEND_ACTIVATION_EMAIL': False,
-    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': '#/activate/{uid}/{token}',
-    'SEND_CONFIRMATION_EMAIL': False,
-    'SERIALIZERS': {
-    'user_create': 'accounts.serializers.UserCreateSerializer',
-    'user': 'accounts.serializers.UserSerializer',
-    'current_user': 'accounts.serializers.UserSerializer',
-    },
-}
 APPEND_SLASH=False
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+
     ),
 }
 
@@ -130,9 +118,9 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': True,
+    'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
-    'UPDATE_LAST_LOGIN': True,
+    'UPDATE_LAST_LOGIN': False,
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
