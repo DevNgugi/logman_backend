@@ -8,12 +8,10 @@ class SourceSerializer(serializers.ModelSerializer):
         model = Source
         fields = '__all__'
 
-
-
 class ConnectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Connection
-        fields = ['ssh_user','ssh_host','ssh_port']
+        fields = ['ssh_user','ssh_host','ssh_port','id']
         
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:

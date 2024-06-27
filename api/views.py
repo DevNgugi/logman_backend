@@ -21,8 +21,24 @@ from rest_framework import status
 #     except Exception as e:
 
 class Sources(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
+        
+        file_path = validated_data['file_path']
+        connection = validated_data['connection']
+        existing_sources = Source.objects.filter(file_path=file_path, connection=connection)
+        if existing_sources.exists():
+            return Response({'error': 'Source with similar details exists'}, status=404)
+        
+        source = Source.objects.create(**validated_data)
+        return Response(SourceSerializer(source).data, status=201)
+            
 
 class Connections(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
