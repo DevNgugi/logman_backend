@@ -14,32 +14,7 @@ class ConnectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Connection
         fields = ['ssh_user','ssh_host','ssh_port']
-
-
-    def create(self, validated_data):
-        _fields = ['ssh_user','ssh_host','ssh_port']
-        for field in _fields:
-            if not validated_data.get(field):
-                raise serializers.ValidationError({field: "This field is required."})
-        username = validated_data['ssh_user']
-        port = validated_data['ssh_port']
-        host = validated_data['ssh_host']
-
-        ssh_pass = validated_data.pop('ssh_pass', None)
-        if ssh_pass is None:
-            raise serializers.ValidationError({'ssh_pass': 'ssh password is required.'})
         
-
-
-        try:
-            password = cipher_suite().encrypt(password.encode())
-
-        except Exception as e:
-            raise serializers.ValidationError(f"Error encoding password to binary: {str(e)}")
-
-        conn = Connection.objects.create(ssh_user=username, ssh_port=port, ssh_pass=password, ssh_host=host)
-        conn.save()
-        return conn
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
