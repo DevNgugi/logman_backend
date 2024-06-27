@@ -3,16 +3,25 @@ from .models import Organization, Source,Connection
 from api.utils.crypt import cipher_suite
 from api.utils.generators import generate_code
 
-class SourceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Source
-        fields = '__all__'
+
 
 class ConnectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Connection
         fields = ['ssh_user','ssh_host','ssh_port','id']
-        
+ 
+class SourceSerializer(serializers.ModelSerializer):
+    connection = ConnectionSerializer(many=False, read_only=True)
+    class Meta:
+        model = Source
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super(SourceSerializer, self).to_representation(instance)
+        representation['created_at'] = instance.created_at.strftime('%d-%m-%y %H:%M:%S')
+        representation['modified_at'] = instance.created_at.strftime('%d-%m-%y %H:%M:%S')
+        return representation
+       
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization

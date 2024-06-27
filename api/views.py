@@ -22,7 +22,7 @@ from rest_framework import status
 
 class Sources(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = Source.objects.all()
+    queryset = Source.objects.all().order_by('-created_at')
     serializer_class = SourceSerializer
 
     def create(self, request, *args, **kwargs):
@@ -42,7 +42,6 @@ class Sources(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
 
 class Connections(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
-    
     queryset = Connection.objects.all()
     serializer_class = ConnectionSerializer
 

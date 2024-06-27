@@ -133,3 +133,8 @@ DEFAULT_FROM_EMAIL = 'noreply@jambopay.com'
 
 
 AUTH_USER_MODEL="accounts.LogmanUser"
+
+
+TIME_ZONE = 'UTC'
+USE_TZ = True
+
