@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.http import JsonResponse
 from .models import Connection, Source
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
@@ -9,11 +10,12 @@ from api.models import Organization
 from rest_framework import viewsets
 from api.utils.crypt import cipher_suite
 from rest_framework.response import Response
-
+from rest_framework import status
 class Sources(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Source.objects.all().order_by('-created_at')
     serializer_class = SourceSerializer
+    lookup_field = 'id'
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -34,6 +36,7 @@ class Connections(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Connection.objects.all().order_by('-created_at')
     serializer_class = ConnectionSerializer
+    lookup_field = 'id'
 
     def create(self, request, *args, **kwargs):
         ssh_pass = self.request.data.get('ssh_pass')

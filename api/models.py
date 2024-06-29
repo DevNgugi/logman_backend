@@ -27,7 +27,7 @@ class Source(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     title = models.CharField(max_length=30)
     file_path= models.CharField(max_length=100, blank=False, null=False)
-    connection  = models.ForeignKey(Connection,on_delete=models.PROTECT, related_name='connections',)
+    connection  = models.ForeignKey(Connection,on_delete=models.CASCADE, related_name='connections',)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 

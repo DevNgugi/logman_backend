@@ -10,5 +10,8 @@ router.register(r'organizations', OrganizationViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path("sources", Sources.as_view()),
+    path("sources/<str:id>", Sources.as_view()),
     path("connections", Connections.as_view()),
+    path("connections/<str:id>", Connections.as_view()),
+
 ]
