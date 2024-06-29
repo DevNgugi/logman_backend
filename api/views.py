@@ -10,16 +10,6 @@ from rest_framework import viewsets
 from api.utils.crypt import cipher_suite
 from rest_framework.response import Response
 
-from rest_framework import status
-
-
-# from api.services.crypt import cipher_suite
-#     obj = Connection.objects.first()
-#     try:
-#         plain = (cipher_suite().decrypt(obj.password))
-#         print(plain.decode())
-#     except Exception as e:
-
 class Sources(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Source.objects.all().order_by('-created_at')

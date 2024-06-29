@@ -15,8 +15,6 @@ class SourceSerializer(serializers.ModelSerializer):
     connection = serializers.PrimaryKeyRelatedField(
         queryset=Connection.objects.all(), write_only=True
     )
-    connection_details = ConnectionSerializer(source='connection', read_only=True)
-
 
     class Meta:
         model = Source

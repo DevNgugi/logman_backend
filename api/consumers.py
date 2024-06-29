@@ -3,6 +3,10 @@ import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 import paramiko
 import time
+from asgiref.sync import sync_to_async 
+from api.utils.crypt import cipher_suite
+
+from api.models import Connection, Source
 class LogConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.socket_id = self.scope["url_route"]["kwargs"]["socket_id"]
@@ -12,22 +16,23 @@ class LogConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
         await self.accept()
-        asyncio.create_task(self.send_message_every_second())
+        # asyncio.create_task(self.send_message_every_second())
 
     async def disconnect(self, close_code):
         # Leave room group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-    async def send_message_every_second(self):
+    async def send_message_every_second(self, source):
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             log_lines = []
 
-            hostname = '165.90.23.196'
-            port = 8044
-            username = 'pngugi'
-            password = 'C0nn4cT140'
-            command = ('tail -f /var/log/county/ug_county.out.log')
+            hostname = source.connection.ssh_host
+            port = source.connection.ssh_port
+            username = source.connection.ssh_user
+            password = source.connection.ssh_pass
+            command = (f'tail -f {source.file_path}')
+
             ssh.connect(hostname, port=port, username=username, password=password)
             stdin, stdout, stderr = ssh.exec_command(command, get_pty=True)
             try:
@@ -53,8 +58,34 @@ class LogConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
+        source_id = text_data_json["source"]
+        # get object with specifi id
+        source = await self.get_source_object(source_id)
+        # decode password
+        source.connection.ssh_pass = await self.decode_password(source.connection.ssh_pass)
 
+        # send logs
+        asyncio.create_task(self.send_message_every_second(source))
+
+
+
+    async def get_source_object(self, source_id):
+        try:
+            # Asynchronous query to fetch Source object by id
+            # connection = await sync_to_async (Source.objects.get)(id=source_id)
+            source = await sync_to_async(Source.objects.select_related('connection').get)(id=source_id)
+
+            # decode password
+            return source
+        
+        except Connection.DoesNotExist:
+            return None
+    async def decode_password(self, encoded_pass):
+        try:
+            plain = (cipher_suite().decrypt(encoded_pass))
+            return plain.decode()
+        except Exception as e:
+             pass
      
     # Receive message from room group
     async def chat_message(self, event):
