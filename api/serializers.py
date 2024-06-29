@@ -8,7 +8,13 @@ from api.utils.generators import generate_code
 class ConnectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Connection
-        fields = ['ssh_user','ssh_host','ssh_port','id']
+        fields = ['ssh_user','ssh_host','ssh_port','id','created_at','modified_at']
+
+    def to_representation(self, instance):
+        representation = super(ConnectionSerializer, self).to_representation(instance)
+        representation['created_at'] = instance.created_at.strftime('%d-%m-%y %H:%M:%S')
+        representation['modified_at'] = instance.created_at.strftime('%d-%m-%y %H:%M:%S')
+        return representation
  
 class SourceSerializer(serializers.ModelSerializer):
 

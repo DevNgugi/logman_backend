@@ -32,7 +32,7 @@ class Sources(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
 
 class Connections(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = Connection.objects.all()
+    queryset = Connection.objects.all().order_by('-created_at')
     serializer_class = ConnectionSerializer
 
     def create(self, request, *args, **kwargs):
