@@ -43,10 +43,6 @@ class LogConsumer(AsyncWebsocketConsumer):
                                 self.room_group_name,
                                 {"type": "chat.message", "message":  m}
                             )
-                            # await self.channel_layer.group_send(
-                            #     self.room_group_name,
-                            #     {"type": "chat.message", "message":  message}
-                            # )
                     
                     await asyncio.sleep(0.1)
 
@@ -57,7 +53,6 @@ class LogConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-
         message = text_data_json["message"]
 
      

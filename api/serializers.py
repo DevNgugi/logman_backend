@@ -11,7 +11,13 @@ class ConnectionSerializer(serializers.ModelSerializer):
         fields = ['ssh_user','ssh_host','ssh_port','id']
  
 class SourceSerializer(serializers.ModelSerializer):
-    connection = ConnectionSerializer(many=False, read_only=True)
+
+    connection = serializers.PrimaryKeyRelatedField(
+        queryset=Connection.objects.all(), write_only=True
+    )
+    connection_details = ConnectionSerializer(source='connection', read_only=True)
+
+
     class Meta:
         model = Source
         fields = '__all__'
@@ -20,6 +26,8 @@ class SourceSerializer(serializers.ModelSerializer):
         representation = super(SourceSerializer, self).to_representation(instance)
         representation['created_at'] = instance.created_at.strftime('%d-%m-%y %H:%M:%S')
         representation['modified_at'] = instance.created_at.strftime('%d-%m-%y %H:%M:%S')
+        representation['connection'] = ConnectionSerializer(instance.connection).data
+
         return representation
        
 class OrganizationSerializer(serializers.ModelSerializer):
