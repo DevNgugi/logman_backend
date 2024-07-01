@@ -7,3 +7,9 @@ ROLES:
 
 - normal user -> view sources
 
+
+**Management**
+
+create default groups
+```python manage.py create_groups   ```
+

@@ -37,7 +37,7 @@ class SourceSerializer(serializers.ModelSerializer):
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ['title','code']
+        fields = ['title','code','id']
         extra_kwargs = {
             'code': {'read_only': True},
         }
