@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer as BaseUserSerializer
 from .models import LogmanUser
+from django.contrib.auth.models import User
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LogmanUser
@@ -33,3 +35,24 @@ class UserSerializer(serializers.ModelSerializer):
                 setattr(instance, attr, value)
         instance.save()
         return instance
+    
+
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # token['name'] = user.name
+        return token
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user_groups = self.user.groups.values_list('name', flat=True)
+        data['user'] = {
+            'id': self.user.id,
+            'email': self.user.email,
+            'name': self.user.name,
+            'groups': list(user_groups)
+        }
+        return data

@@ -105,6 +105,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 APPEND_SLASH=False
+AUTH_USER_MODEL="accounts.LogmanUser"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -115,6 +116,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'TOKEN_OBTAIN_SERIALIZER': 'accounts.serializers.CustomTokenObtainPairSerializer',
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
@@ -131,7 +133,6 @@ EMAIL_HOST_PASSWORD = 'Trent655!!'
 DEFAULT_FROM_EMAIL = 'noreply@jambopay.com' 
 
 
-AUTH_USER_MODEL="accounts.LogmanUser"
 
 
 TIME_ZONE = 'UTC'
