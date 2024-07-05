@@ -8,6 +8,8 @@ from api.utils.crypt import cipher_suite
 
 from api.models import Connection, Source
 class LogConsumer(AsyncWebsocketConsumer):
+    task = None
+    data = None
     async def connect(self):
         self.socket_id = self.scope["url_route"]["kwargs"]["socket_id"]
         self.room_group_name = f"log_{self.socket_id}"
@@ -16,11 +18,20 @@ class LogConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
         await self.accept()
-        # asyncio.create_task(self.send_message_every_second())
 
     async def disconnect(self, close_code):
         # Leave room group
+        print('disconnecting')
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+
+        if self.task:
+            self.task.cancel()
+            self.data = None
+            try:
+                await self.task
+                print(self.task)
+            except asyncio.CancelledError:
+                print("Task was cancelled")
 
     async def send_message_every_second(self, source):
             ssh = paramiko.SSHClient()
@@ -40,20 +51,25 @@ class LogConsumer(AsyncWebsocketConsumer):
                 while not stdout.channel.exit_status_ready():
                     # Non-blocking read using recv_ready and recv
                     if stdout.channel.recv_ready():
-                        data = stdout.channel.recv(2048)
-                        if data:
-                            message = (data.decode().strip()).splitlines()
+                        
+                        if not self.data:
+                            self.data = stdout.channel.recv(2048)
+                            message = (self.data.decode().strip()).splitlines()
                             for i, m in enumerate(message):
                                  await self.channel_layer.group_send(
                                 self.room_group_name,
                                 {"type": "chat.message", "message":  m}
                             )
+                        else:
+                            self.data = None        
                     
                     await asyncio.sleep(0.1)
+            except asyncio.CancelledError:
+                print("was cancelled. Performing cleanup.")
 
             except Exception as e:
                     print(f"An error occurred while reading log: {e}")
-                    ssh.close()
+                    ssh.close() 
 
     # Receive message from WebSocket
     async def receive(self, text_data):
@@ -65,7 +81,8 @@ class LogConsumer(AsyncWebsocketConsumer):
         source.connection.ssh_pass = await self.decode_password(source.connection.ssh_pass)
 
         # send logs
-        asyncio.create_task(self.send_message_every_second(source))
+        self.data = None
+        self.task = asyncio.create_task(self.send_message_every_second(source))
 
 
 
