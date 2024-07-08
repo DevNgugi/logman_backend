@@ -54,9 +54,13 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+     'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'logman',
+        'USER': 'jp',
+        'PASSWORD': 'jp.gis##@!@#',
+        'HOST': '192.168.8.18',
+        'PORT': '5432', 
     }
 }
 
@@ -92,18 +96,20 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],
+            'hosts': [('192.168.11.61', 6379)],
         },
     },
 }
 
-
 ALLOWED_HOSTS = ['*']
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
+    'http://212.22.169.117:8080',
+    'http://212.22.169.117:4200',
+    'http://localhost:8080',
+    'http://localhost:4200'
 ]
-
+CSRF_TRUSTED_ORIGINS = ["http://212.22.169.117:8080", 'http://localhost:8080']
 APPEND_SLASH=False
 AUTH_USER_MODEL="accounts.LogmanUser"
 

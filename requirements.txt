@@ -41,6 +41,7 @@ paramiko==3.4.0
 parso==0.8.4
 pexpect==4.9.0
 prompt_toolkit==3.0.47
+psycopg2-binary==2.9.9
 ptyprocess==0.7.0
 pure-eval==0.2.2
 pyasn1==0.6.0
