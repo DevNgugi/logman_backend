@@ -117,7 +117,7 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
     'TOKEN_OBTAIN_SERIALIZER': 'accounts.serializers.CustomTokenObtainPairSerializer',
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=30), 
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -131,8 +131,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'noreply@jambopay.com'
 EMAIL_HOST_PASSWORD = 'Trent655!!'
 DEFAULT_FROM_EMAIL = 'noreply@jambopay.com' 
-
-
 
 
 TIME_ZONE = 'UTC'
