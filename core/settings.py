@@ -1,5 +1,6 @@
 from datetime import timedelta
 from pathlib import Path
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-g!d%fa%i=6q9^vecdotj9%e7bjpx4dvgh!h46)j2)1ew=q6re_'
@@ -56,11 +57,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'logman',
-        'USER': 'jp',
-        'PASSWORD': 'jp.gis##@!@#',
-        'HOST': '192.168.8.18',
-        'PORT': '5432', 
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'), 
     }
 }
 
@@ -96,20 +97,16 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('192.168.11.61', 6379)],
+            'hosts': [(config('REDIS_HOST'), config('REDIS_PORT'))],
         },
     },
 }
 
 ALLOWED_HOSTS = ['*']
 
-CORS_ALLOWED_ORIGINS = [
-    'http://212.22.169.117:8080',
-    'http://212.22.169.117:4200',
-    'http://localhost:8080',
-    'http://localhost:4200'
-]
-CSRF_TRUSTED_ORIGINS = ["http://212.22.169.117:8080", 'http://localhost:8080']
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='').split(',')
+
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='').split(',')
 APPEND_SLASH=False
 AUTH_USER_MODEL="accounts.LogmanUser"
 
