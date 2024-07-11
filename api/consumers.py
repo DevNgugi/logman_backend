@@ -78,11 +78,13 @@ class LogConsumer(AsyncWebsocketConsumer):
         # get object with specifi id
         source = await self.get_source_object(source_id)
         # decode password
-        source.connection.ssh_pass = await self.decode_password(source.connection.ssh_pass)
+        print(vars(source.connection))
 
+        source.connection.ssh_pass = await self.decode_password(source.connection.ssh_pass)
         # send logs
         self.data = None
         self.task = asyncio.create_task(self.send_message_every_second(source))
+
 
 
 
@@ -91,13 +93,13 @@ class LogConsumer(AsyncWebsocketConsumer):
             # Asynchronous query to fetch Source object by id
             # connection = await sync_to_async (Source.objects.get)(id=source_id)
             source = await sync_to_async(Source.objects.select_related('connection').get)(id=source_id)
-
             # decode password
             return source
         
         except Connection.DoesNotExist:
             return None
     async def decode_password(self, encoded_pass):
+        print('*************',encoded_pass)
         try:
             plain = (cipher_suite().decrypt(encoded_pass))
             return plain.decode()
