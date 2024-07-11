@@ -25,6 +25,7 @@ djoser==2.2.3
 drf-yasg==1.21.7
 exceptiongroup==1.2.1
 executing==2.0.1
+gunicorn==22.0.0
 hyperlink==21.0.0
 idna==3.6
 incremental==22.10.0
