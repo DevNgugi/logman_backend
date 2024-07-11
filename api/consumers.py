@@ -42,9 +42,10 @@ class LogConsumer(AsyncWebsocketConsumer):
             port = source.connection.ssh_port
             username = source.connection.ssh_user
             password = source.connection.ssh_pass
+
             command = (f'tail -f {source.file_path}')
 
-            ssh.connect(hostname, port=port, username=username, password=password)
+            ssh.connect(hostname, port=port, username=username, password=password, look_for_keys=False)
             stdin, stdout, stderr = ssh.exec_command(command, get_pty=True)
             try:
 
@@ -78,7 +79,6 @@ class LogConsumer(AsyncWebsocketConsumer):
         # get object with specifi id
         source = await self.get_source_object(source_id)
         # decode password
-        print(vars(source.connection))
 
         source.connection.ssh_pass = await self.decode_password(source.connection.ssh_pass)
         # send logs
@@ -99,9 +99,8 @@ class LogConsumer(AsyncWebsocketConsumer):
         except Connection.DoesNotExist:
             return None
     async def decode_password(self, encoded_pass):
-        print('*************',encoded_pass)
         try:
-            plain = (cipher_suite().decrypt(encoded_pass))
+            plain = (cipher_suite().decrypt(bytes(encoded_pass)))
             return plain.decode()
         except Exception as e:
              pass
