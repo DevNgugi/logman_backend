@@ -3,6 +3,7 @@ from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer,
 from .models import LogmanUser
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LogmanUser
@@ -61,7 +62,7 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        refresh = self.token
+        refresh = RefreshToken(attrs['refresh'])
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
 
