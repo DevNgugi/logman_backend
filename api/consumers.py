@@ -33,7 +33,7 @@ class LogConsumer(AsyncWebsocketConsumer):
             except asyncio.CancelledError:
                 print("Task was cancelled")
 
-    async def send_message_every_second(self, source):
+    async def send_message_every_second(self, source, lines):
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             log_lines = []
@@ -42,8 +42,12 @@ class LogConsumer(AsyncWebsocketConsumer):
             port = source.connection.ssh_port
             username = source.connection.ssh_user
             password = source.connection.ssh_pass
+            
+            if lines > 0 and lines < 1000:
+                command = (f'tail -f {source.file_path} -n {lines}')
+            else:
+                command = (f'tail -f {source.file_path}')
 
-            command = (f'tail -f {source.file_path}')
 
             ssh.connect(hostname, port=port, username=username, password=password, look_for_keys=False)
             stdin, stdout, stderr = ssh.exec_command(command, get_pty=True)
@@ -75,15 +79,16 @@ class LogConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
+
         source_id = text_data_json["source"]
+        lines = text_data_json["lines"]
         # get object with specifi id
         source = await self.get_source_object(source_id)
         # decode password
-
         source.connection.ssh_pass = await self.decode_password(source.connection.ssh_pass)
         # send logs
         self.data = None
-        self.task = asyncio.create_task(self.send_message_every_second(source))
+        self.task = asyncio.create_task(self.send_message_every_second(source, int(lines)))
 
 
 
