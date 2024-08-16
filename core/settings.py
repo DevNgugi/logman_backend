@@ -1,7 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
 from decouple import config
-
+import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-g!d%fa%i=6q9^vecdotj9%e7bjpx4dvgh!h46)j2)1ew=q6re_'
 DEBUG = True
@@ -25,6 +25,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -139,3 +140,7 @@ DEFAULT_FROM_EMAIL = 'noreply@jambopay.com'
 TIME_ZONE = 'UTC'
 USE_TZ = True
 
+
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
